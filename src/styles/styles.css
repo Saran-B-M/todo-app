@@ -1,16 +1,32 @@
-/*******************************tags*******************************************/
+/********************************imports***************************************/
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
+/********************************variables*************************************/
+:root {
+    --header-background: #1f2937;
+    --body-background: #f9fafb; 
+    
+    --header-color: #e5e7eb;
+    --content-color: #111827;
+    --priority-high: #ef4444;
+    --priority-medium: #60a5fa;
+    --priority-none:  #e5e7eb;
+}
+
+/*******************************tags*******************************************/
 body {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--body-background);
 }
 
 header {
-    background-color: rgb(0, 72, 255);
+    background-color: var(--header-background);
+    height: 4rem;
+    color: var(--header-color);
+    font-weight: bold;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
 
 }
 
@@ -26,4 +42,63 @@ header {
     align-items: center;
     justify-items: center;
     gap: 20px;
+}
+
+.content-home {
+    padding: 0 50px;
+
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+
+}
+
+.content-home h1 {
+    font-size: 3rem;
+}
+
+.content-home h2 {
+    font-size: 2rem;
+}
+
+.greetings {
+    grid-column: 1/-1;
+    justify-self: center;
+    align-self: center;
+}
+
+.projects-container {
+    grid-column: 1/2;
+}
+
+.subtasks-container {
+    text-align: center; 
+    background-color: var(--priority-none);
+    border-radius: 15px;
+    
+
+    grid-column: 2/-1;
+}
+
+.subtasks-container > h2 {
+    padding: 10px;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+} 
+
+.project {
+    width: 200px;
+    height: 200px;
+    background-color: var(--priority-none);
+    border-radius: 15px;
+
+    display: grid;
+    justify-items: center;
+    align-items: center;
 }

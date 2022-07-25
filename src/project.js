@@ -5,4 +5,8 @@ function Project(title, description='', dueDate='', priority=''){
     return {title, description, dueDate, priority, projectAbout};
 }
 
-export {Project};
+function SubTask(description) {
+    return {description}
+}
+
+export {Project, SubTask};
