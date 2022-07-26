@@ -1,0 +1,65 @@
+
+/************************************class*************************************/
+.content-home {
+    padding: 0 50px;
+
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    grid-template-rows: 1fr 2fr 2fr;
+
+    gap: 20px;
+
+}
+
+.content-home h1 {
+    font-size: 3rem;
+}
+
+.content-home h2 {
+    font-size: 2rem;
+}
+
+.greetings {
+    grid-column: 1/-1;
+    grid-row: 1/2;
+    justify-self: center;
+    align-self: center;
+}
+
+.projects-container {
+    grid-column: 1/2;
+    grid-row: 2/-1;
+}
+
+.subtasks-container {
+    text-align: center; 
+    background-color: var(--priority-none);
+    border-radius: 15px;
+    
+    grid-column: 2/-1;
+    grid-row: 2/3;
+}
+
+.subtasks-container > h2 {
+    padding: 10px;
+    border-bottom: 1px solid rgb(200, 200, 200);
+}
+
+.projects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+} 
+
+.project {
+    width: 200px;
+    height: 200px;
+    background-color: var(--priority-none);
+    border-radius: 15px;
+
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}

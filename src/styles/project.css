@@ -1,0 +1,56 @@
+/****************************class*********************************************/
+.content-project{
+    margin: 10px 80px;
+}
+
+.project-info{
+    
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 0.5fr 1fr;
+}
+
+.project-info > h1 {
+    grid-column: 1/2;
+
+    align-self: center;
+}
+
+.project-info p:nth-child(2){
+    font-size: 1.5rem;
+    grid-column: 2/-1;
+    align-self: center;
+    justify-self: end;
+    
+}
+
+.project-info p:nth-child(3){
+    grid-column: 1/-1;
+    grid-row: 2/-1;
+
+    width: clamp(45ch, 50%, 85ch);
+}
+
+.project-info > .notes-container{
+    grid-column: 2/-1;
+    grid-row: 2/-1;
+}
+
+.project-subTasks {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    justify-items: center;
+    align-items: center;
+    gap: 10px;
+} 
+
+.project-subTask {
+    width: 200px;
+    height: 200px;
+    background-color: var(--priority-none);
+    border-radius: 15px;
+
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}

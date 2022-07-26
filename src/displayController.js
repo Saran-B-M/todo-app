@@ -1,14 +1,16 @@
 import "normalize.css/normalize.css"
-import "./styles/styles.css"
+import "./styles/base.css"
+import "./styles/home.css"
+import "./styles/project.css"
 import logoImage from "./images/logo.png"
 
-import { Project, SubTask } from "./project"
+import * as bL from "./project"
 
 const displayController = (function(){
+    const body = document.querySelector("body");
 
     const createNavBar  = () => {
         const header = document.createElement("header");
-        const body = document.querySelector("body");
         
         const dateDayTime = document.createElement("div");
         dateDayTime.classList.add("dateDayTime")
@@ -29,8 +31,7 @@ const displayController = (function(){
     }
 
 
-    function createHomePage(){
-        const body = document.querySelector("body");
+    const  createHomePage = function(){
         const content = document.createElement("div");
         content.classList.add("content-home");
 
@@ -47,17 +48,7 @@ const displayController = (function(){
         const projects = document.createElement("div");
         projects.classList.add("projects");
 
-        const p1 = Project("Lorem Ipsum");
-        const p2 = Project("Lorem Ipsum");
-        const p3 = Project("Lorem Ipsum");
-
-        let projectList = [];
-        projectList.push(p1);
-        projectList.push(p2);
-        projectList.push(p3);
-        
-
-        for(let project of projectList){
+        for(let project of bL.projectList){
             let projectDiv = document.createElement("div");
             projectDiv.classList.add("project");
             let projectTitle = document.createElement("h3");
@@ -80,16 +71,7 @@ const displayController = (function(){
         const subTasks = document.createElement("div");
         subTasks.classList.add("subtasks");
 
-        let s1 = SubTask("poganum");
-        let s2 = SubTask("poitu irruken");
-        let s3 = SubTask("poiten");
-
-        let subTaskList = [];
-        subTaskList.push(s1);
-        subTaskList.push(s2);
-        subTaskList.push(s3);
-
-        subTaskList.forEach((subTask => {
+        bL.subTaskList.forEach((subTask => {
             let subTaskDiv = document.createElement("h3");
             subTaskDiv.textContent = subTask.description;
 
@@ -99,16 +81,131 @@ const displayController = (function(){
         subTaskContainer.appendChild(subTaskHeading);
         subTaskContainer.appendChild(subTasks);
 
+        const notesContainer = document.createElement("div");
+        notesContainer.classList.add("notes-container");
+        
+        const notesHeading = document.createElement("h2");
+        notesHeading.textContent = "Notes";
+
+        const notes = document.createElement("div");
+        notes.classList.add("notes");
+
+        bL.generalNotes.forEach((note => {
+            let noteDiv = document.createElement("h3");
+            noteDiv.textContent = note.description;
+
+            notes.appendChild(noteDiv);
+        }))
+
+        notesContainer.appendChild(notesHeading);
+        notesContainer.appendChild(notes);
+        
+
         content.appendChild(greetings);
         content.appendChild(projectsContainer);
         content.appendChild(subTaskContainer);
+        content.appendChild(notesContainer);
 
         body.appendChild(content);
 
     }
+
+    //Create a function called create Project page that takes a project title 
+    //and shows the relevant date about the project
+    const createProjectPage = function(projectTitle){
+        let project;
+        bL.projectList.forEach((p)=>{
+            if(p.title===projectTitle) project = p;
+        });
+
+        const content = document.createElement("div");
+        content.classList.add("content-project");
+
+        const projectInfoContainer = document.createElement("div");
+        projectInfoContainer.classList.add("project-info");
+
+        const projectHeading = document.createElement("h1");
+        projectHeading.textContent = project.title;
+
+        const projectDueDate = document.createElement("p");
+        projectDueDate.textContent = `Due date: ${project.dueDate}`;
+
+        const projectDescriptionContainer = document.createElement("div");
+        const projectDescriptionHeading = document.createElement("h2");
+        projectDescriptionHeading.textContent = "Description:";
+        const projectDescription = document.createElement("p");
+        projectDescription.textContent = project.description;
+        projectDescriptionContainer.appendChild(projectDescriptionHeading);
+        projectDescriptionContainer.appendChild(projectDescription);
+
+        projectInfoContainer.appendChild(projectHeading);
+        projectInfoContainer.appendChild(projectDueDate);
+        projectInfoContainer.appendChild(projectDescriptionContainer);
+
+        const subTasksContainer = document.createElement("div");
+        subTasksContainer.classList.add("project-subtasks-container");
+
+        const subTasksHeading = document.createElement("h2");
+        subTasksHeading.textContent = "Sub Tasks";
+        
+
+        const subTasks = document.createElement("div");
+        subTasks.classList.add("project-subTasks");
+
+        for(let p of project.subTasks){
+            let subTaskDiv = document.createElement("div");
+            subTaskDiv.classList.add("project-subTask");
+            let subTaskTitle = document.createElement("h3");
+            subTaskTitle.textContent = p.title;
+            subTaskDiv.appendChild(subTaskTitle);
+
+            for(let sub of p.tasks){
+                let subTaskP = document.createElement("p");
+                subTaskP.textContent = sub.description;
+                subTaskDiv.appendChild(subTaskP);
+            }
+            
+
+            subTasks.appendChild(subTaskDiv);
+
+        }
+
+        subTasksContainer.appendChild(subTasksHeading);
+        subTasksContainer.appendChild(subTasks);
+
+        const notesContainer = document.createElement("div");
+        notesContainer.classList.add("notes-container");
+        
+        const notesHeading = document.createElement("h2");
+        notesHeading.textContent = "Notes";
+
+        const notes = document.createElement("div");
+        notes.classList.add("notes");
+
+        project.notes.forEach((note => {
+            let noteDiv = document.createElement("h3");
+            noteDiv.textContent = note.description;
+
+            notes.appendChild(noteDiv);
+        }))
+
+        notesContainer.appendChild(notesHeading);
+        notesContainer.appendChild(notes);
+
+        projectInfoContainer.appendChild(notesContainer);
+        content.appendChild(projectInfoContainer);
+        content.appendChild(subTasksContainer);
+        
+
+        body.appendChild(content);
+        
+    }
+
+
     const createPage = function(){
         createNavBar();
-        createHomePage();
+        //createHomePage();
+        createProjectPage("1st Project");
     };
 
     createPage();
