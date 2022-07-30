@@ -2,15 +2,20 @@ import "normalize.css/normalize.css"
 import "./styles/base.css"
 import "./styles/home.css"
 import "./styles/project.css"
-import logoImage from "./images/logo.png"
+import homeLogo from "./images/home-outline.png"
 
 import * as bL from "./project"
 
 const displayController = (function(){
     const body = document.querySelector("body");
+    let content='';
 
     const createNavBar  = () => {
         const header = document.createElement("header");
+
+        const homeLogoEle = new Image();
+        homeLogoEle.src = homeLogo;
+        homeLogoEle.addEventListener("click", createHomePage);
         
         const dateDayTime = document.createElement("div");
         dateDayTime.classList.add("dateDayTime")
@@ -25,14 +30,76 @@ const displayController = (function(){
         dateDayTime.appendChild(date);
         dateDayTime.appendChild(time);
     
+        header.appendChild(homeLogoEle);
         header.appendChild(dateDayTime)
     
         body.append(header)
     }
 
+    const createNewProject = function(){
+        content = document.createElement("div");
+        content.classList.add("content-newProject");
+        
+        const heading = document.createElement("h1");
+        heading.textContent = "New Project";
+
+        const newProjectForm = document.createElement("div");
+
+        const projectTitle = document.createElement("label");
+        projectTitle.textContent = "Title";
+        const projectTitleInput = document.createElement("input");
+        projectTitleInput.id = 'title';
+        projectTitle.appendChild(projectTitleInput);
+
+        const projectDescription = document.createElement("label");
+        projectDescription.textContent = "Description";
+        const projectDescriptionInput = document.createElement("input");
+        projectDescriptionInput.id = "description";
+        projectDescription.appendChild(projectDescriptionInput);
+
+        const projectDueDate = document.createElement("label");
+        projectDueDate.textContent = "Due-Date";
+        const projectDueDateInput = document.createElement("input");
+        projectDueDateInput.id = "duedate";
+        projectDueDate.appendChild(projectDueDateInput);
+
+        const projectPriority = document.createElement("label");
+        projectPriority.textContent = "Priority";
+        const projectPriorityInput = document.createElement("input");
+        projectPriorityInput.id = "priority";
+        projectPriority.appendChild(projectPriorityInput);
+
+        const createProject = document.createElement("button");
+        createProject.textContent = "Create";
+
+        createProject.addEventListener("click", ()=>{
+            let title = document.querySelector("#title").value;
+            let description = document.querySelector("#description").value;
+            let dueDate = document.querySelector("#duedate").value;
+            let priority = document.querySelector("#priority").value;
+
+            let newProject = bL.Project(title, description, dueDate, priority);
+            console.log(newProject);
+            bL.projectList.push(newProject);
+            body.removeChild(content);
+            createProjectPage(newProject.title);
+        })
+
+        newProjectForm.appendChild(projectTitle);
+        newProjectForm.appendChild(projectDescription);
+        newProjectForm.appendChild(projectDueDate);
+        newProjectForm.appendChild(projectPriority);
+        newProjectForm.appendChild(createProject);
+
+        content.appendChild(heading);
+        content.appendChild(newProjectForm);
+
+        body.appendChild(content);
+    }
 
     const  createHomePage = function(){
-        const content = document.createElement("div");
+        if(content) body.removeChild(content);
+        content = document.createElement("div");
         content.classList.add("content-home");
 
         const greetings = document.createElement("h1");
@@ -42,24 +109,46 @@ const displayController = (function(){
         const projectsContainer = document.createElement("div");
         projectsContainer.classList.add("project-container");
 
+        const projectHeadingDiv = document.createElement("div");
         const projectHeading = document.createElement("h2");
         projectHeading.textContent = "What do you like to work on?";
+        const newProjectBtn = document.createElement("button");
+        newProjectBtn.textContent = "New Project";
+
+        newProjectBtn.addEventListener("click", ()=> {
+            body.removeChild(content);
+            createNewProject();
+        })
+
+        projectHeadingDiv.appendChild(projectHeading);
+        projectHeadingDiv.appendChild(newProjectBtn);
 
         const projects = document.createElement("div");
         projects.classList.add("projects");
 
-        for(let project of bL.projectList){
-            let projectDiv = document.createElement("div");
-            projectDiv.classList.add("project");
-            let projectTitle = document.createElement("h3");
-            projectTitle.textContent = project.title;
-            projectDiv.appendChild(projectTitle);
+        const eventListeners = function() {
+            const openProject = (e) => {
+                
+            }
 
-            projects.appendChild(projectDiv);
+            return {openProject};
+        }
+
+        for(let project of bL.projectList){
+            let projectBtn = document.createElement("button");
+            projectBtn.classList.add("project");
+            projectBtn.textContent = project.title;
+            
+            projectBtn.id = project.title;
+            projectBtn.addEventListener('click', (e)=>{
+                body.removeChild(content);
+                createProjectPage(e.target.id);
+            });
+            projects.appendChild(projectBtn);
 
         }
 
-        projectsContainer.appendChild(projectHeading);
+        projectsContainer.appendChild(projectHeadingDiv);
         projectsContainer.appendChild(projects);
 
         const subTaskContainer = document.createElement("div");
@@ -118,7 +207,7 @@ const displayController = (function(){
             if(p.title===projectTitle) project = p;
         });
 
-        const content = document.createElement("div");
+        content = document.createElement("div");
         content.classList.add("content-project");
 
         const projectInfoContainer = document.createElement("div");
@@ -204,8 +293,8 @@ const displayController = (function(){
 
     const createPage = function(){
         createNavBar();
-        //createHomePage();
-        createProjectPage("1st Project");
+        createHomePage();
+        //createProjectPage("1st Project");
     };
 
     createPage();

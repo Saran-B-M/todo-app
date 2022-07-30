@@ -15,6 +15,7 @@ function SubTask(title) {
     let tasks = [];
     return {title, priority, tasks};
 }
+
 let s1 = SubTask("poganum");
 s1.tasks.push(Notes('sub1'));
 s1.tasks.push(Notes('sub2'));
