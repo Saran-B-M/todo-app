@@ -160,7 +160,22 @@ const displayController = (function(){
         const subTasks = document.createElement("div");
         subTasks.classList.add("subtasks");
 
-        bL.subTaskList.forEach((subTask => {
+        const newSubTask = document.createElement("div");
+        newSubTask.classList.add("newSubTask");
+        const newSubTaskInput = document.createElement("input");
+        newSubTaskInput.id = "newSubTask";
+        const addNewSubTaskBtn = document.createElement("button");
+        addNewSubTaskBtn.textContent = "Add";
+        addNewSubTaskBtn.addEventListener("click", ()=>{
+            bL.generalSubTasks.push(bL.Notes(newSubTaskInput.value));
+            
+            createHomePage();
+
+        })
+        newSubTask.appendChild(newSubTaskInput);
+        newSubTask.appendChild(addNewSubTaskBtn);
+
+        bL.generalSubTasks.forEach((subTask => {
             let subTaskDiv = document.createElement("h3");
             subTaskDiv.textContent = subTask.description;
 
@@ -169,6 +184,7 @@ const displayController = (function(){
 
         subTaskContainer.appendChild(subTaskHeading);
         subTaskContainer.appendChild(subTasks);
+        subTaskContainer.appendChild(newSubTask);
 
         const notesContainer = document.createElement("div");
         notesContainer.classList.add("notes-container");
@@ -179,6 +195,21 @@ const displayController = (function(){
         const notes = document.createElement("div");
         notes.classList.add("notes");
 
+        const newNotes = document.createElement("div");
+        newNotes.classList.add("newNotes");
+        const newNotesInput = document.createElement("input");
+        newNotesInput.id = "newNotes";
+        const addNewNotesBtn = document.createElement("button");
+        addNewNotesBtn.textContent = "Add";
+        addNewNotesBtn.addEventListener("click", ()=>{
+            bL.generalNotes.push(bL.Notes(newNotesInput.value));
+            body.removeChild(content);
+            createHomePage();
+
+        })
+        newNotes.appendChild(newNotesInput);
+        newNotes.appendChild(addNewNotesBtn); 
+
         bL.generalNotes.forEach((note => {
             let noteDiv = document.createElement("h3");
             noteDiv.textContent = note.description;
@@ -188,6 +219,7 @@ const displayController = (function(){
 
         notesContainer.appendChild(notesHeading);
         notesContainer.appendChild(notes);
+        notesContainer.appendChild(newNotes);
         
 
         content.appendChild(greetings);
@@ -234,9 +266,22 @@ const displayController = (function(){
         const subTasksContainer = document.createElement("div");
         subTasksContainer.classList.add("project-subtasks-container");
 
+        const subTasksHeadingContainer = document.createElement("div");
+        subTasksHeadingContainer.classList.add("subtasks-heading-container");
+
         const subTasksHeading = document.createElement("h2");
         subTasksHeading.textContent = "Sub Tasks";
-        
+        const addSubtaskBtn = document.createElement("button");
+        addSubtaskBtn.textContent = "New Subtask";
+        addSubtaskBtn.addEventListener("click", ()=>{
+            let subTaskHeading = prompt("What's the title of the subtask?");
+            project.subTasks.push(bL.SubTask(subTaskHeading));
+            body.removeChild(content);
+            createProjectPage(project.title);
+        })
+
+        subTasksHeadingContainer.appendChild(subTasksHeading);
+        subTasksHeadingContainer.appendChild(addSubtaskBtn);
 
         const subTasks = document.createElement("div");
         subTasks.classList.add("project-subTasks");
@@ -253,13 +298,29 @@ const displayController = (function(){
                 subTaskP.textContent = sub.description;
                 subTaskDiv.appendChild(subTaskP);
             }
-            
+
+
+            const newTask = document.createElement("div");
+            newTask.classList.add("newTask");
+            const newTaskInput = document.createElement("input");
+            newTaskInput.id = "newTask";
+            const addNewTaskBtn = document.createElement("button");
+            addNewTaskBtn.textContent = "Add";
+            addNewTaskBtn.addEventListener("click", ()=>{
+                p.tasks.push(bL.Notes(newTaskInput.value));
+                body.removeChild(content);
+                createProjectPage(project.title);
+
+            })
+            newTask.appendChild(newTaskInput);
+            newTask.appendChild(addNewTaskBtn);
+            subTaskDiv.appendChild(newTask);
 
             subTasks.appendChild(subTaskDiv);
 
         }
 
-        subTasksContainer.appendChild(subTasksHeading);
+        subTasksContainer.appendChild(subTasksHeadingContainer);
         subTasksContainer.appendChild(subTasks);
 
         const notesContainer = document.createElement("div");
@@ -271,15 +332,31 @@ const displayController = (function(){
         const notes = document.createElement("div");
         notes.classList.add("notes");
 
+        const newNote = document.createElement("div");
+        newNote.classList.add("newNote");
+        const newNoteInput = document.createElement("input");
+        newNoteInput.id = "newNote";
+        const addNewNoteBtn = document.createElement("button");
+        addNewNoteBtn.textContent = "Add";
+        addNewNoteBtn.addEventListener("click", ()=>{
+            project.notes.push(bL.Notes(newNoteInput.value));
+            body.removeChild(content);
+            createProjectPage(project.title);
+
+        })
+        newNote.appendChild(newNoteInput);
+        newNote.appendChild(addNewNoteBtn);
+
         project.notes.forEach((note => {
             let noteDiv = document.createElement("h3");
             noteDiv.textContent = note.description;
 
             notes.appendChild(noteDiv);
-        }))
+        }));
 
         notesContainer.appendChild(notesHeading);
         notesContainer.appendChild(notes);
+        notesContainer.appendChild(newNote);
 
         projectInfoContainer.appendChild(notesContainer);
         content.appendChild(projectInfoContainer);

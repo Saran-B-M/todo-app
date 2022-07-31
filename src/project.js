@@ -43,18 +43,18 @@ projectList.push(p1);
 projectList.push(p2);
 projectList.push(p3);
 
-
-let subTaskList = [];
-subTaskList.push(s1);
-subTaskList.push(s2);
-subTaskList.push(s3);
-
 let n1 = Notes("Lorem ipsum dolor sit.");
 let n2 = Notes("Lorem ipsum dolor sit.");
 let n3 = Notes("Lorem ipsum dolor sit.");
+let generalSubTasks = [];
+generalSubTasks.push(n1);
+generalSubTasks.push(n2);
+generalSubTasks.push(n3);
+
+
 let generalNotes = [];
 generalNotes.push(n1);
 generalNotes.push(n2);
 generalNotes.push(n3);
 
-export {Project, SubTask, Notes, projectList, subTaskList, generalNotes};
+export {Project, SubTask, Notes, projectList, generalSubTasks, generalNotes};
