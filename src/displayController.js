@@ -37,6 +37,7 @@ const displayController = (function(){
     }
 
     const createNewProject = function(){
+        if(content) body.removeChild(content);
         content = document.createElement("div");
         content.classList.add("content-newProject");
         
@@ -81,7 +82,6 @@ const displayController = (function(){
             let newProject = bL.Project(title, description, dueDate, priority);
             console.log(newProject);
             bL.projectList.push(newProject);
-            body.removeChild(content);
             createProjectPage(newProject.title);
         })
 
@@ -116,7 +116,6 @@ const displayController = (function(){
         newProjectBtn.textContent = "New Project";
 
         newProjectBtn.addEventListener("click", ()=> {
-            body.removeChild(content);
             createNewProject();
         })
 
@@ -141,7 +140,7 @@ const displayController = (function(){
             
             projectBtn.id = project.title;
             projectBtn.addEventListener('click', (e)=>{
-                body.removeChild(content);
+                
                 createProjectPage(e.target.id);
             });
             projects.appendChild(projectBtn);
@@ -176,10 +175,23 @@ const displayController = (function(){
         newSubTask.appendChild(addNewSubTaskBtn);
 
         bL.generalSubTasks.forEach((subTask => {
-            let subTaskDiv = document.createElement("h3");
-            subTaskDiv.textContent = subTask.description;
+            let subTaskDiv = document.createElement("div");
 
+            let subTaskDescription = document.createElement("h3")
+            subTaskDescription.textContent = subTask.description;
+
+            let removeSubTask = document.createElement("button");
+            removeSubTask.textContent = "X";
+            removeSubTask.addEventListener("click", ()=>{
+                let subTaskIndex = bL.generalSubTasks.indexOf(subTask);
+                bL.generalSubTasks.splice(subTaskIndex, 1);
+                createHomePage();
+            })
+
+            subTaskDiv.appendChild(subTaskDescription);
+            subTaskDiv.appendChild(removeSubTask);
             subTasks.appendChild(subTaskDiv);
+
         }))
 
         subTaskContainer.appendChild(subTaskHeading);
@@ -203,7 +215,6 @@ const displayController = (function(){
         addNewNotesBtn.textContent = "Add";
         addNewNotesBtn.addEventListener("click", ()=>{
             bL.generalNotes.push(bL.Notes(newNotesInput.value));
-            body.removeChild(content);
             createHomePage();
 
         })
@@ -211,9 +222,22 @@ const displayController = (function(){
         newNotes.appendChild(addNewNotesBtn); 
 
         bL.generalNotes.forEach((note => {
-            let noteDiv = document.createElement("h3");
-            noteDiv.textContent = note.description;
+            let noteDiv = document.createElement("div");
 
+            let notesDescription = document.createElement("h3")
+            notesDescription.textContent = note.description;
+
+            let removeNote = document.createElement("button");
+            removeNote.textContent = "X";
+            removeNote.addEventListener("click", ()=>{
+                let noteIndex = bL.generalNotes.indexOf(note);
+                bL.generalNotes.splice(noteIndex, 1);
+                createHomePage();
+            })
+
+            noteDiv.appendChild(notesDescription);
+            noteDiv.appendChild(removeNote);
+            
             notes.appendChild(noteDiv);
         }))
 
@@ -234,6 +258,7 @@ const displayController = (function(){
     //Create a function called create Project page that takes a project title 
     //and shows the relevant date about the project
     const createProjectPage = function(projectTitle){
+        if(content) body.removeChild(content); 
         let project;
         bL.projectList.forEach((p)=>{
             if(p.title===projectTitle) project = p;
@@ -289,14 +314,45 @@ const displayController = (function(){
         for(let p of project.subTasks){
             let subTaskDiv = document.createElement("div");
             subTaskDiv.classList.add("project-subTask");
+            
+
+            let subHeadingDiv = document.createElement("div");
+
             let subTaskTitle = document.createElement("h3");
             subTaskTitle.textContent = p.title;
-            subTaskDiv.appendChild(subTaskTitle);
+
+    
+            let removeSubTask = document.createElement("button");
+            removeSubTask.textContent = "X";
+            removeSubTask.addEventListener("click", ()=>{
+                let subTaskIndex = project.subTasks.indexOf(p);
+                project.subTasks.splice(subTaskIndex, 1);
+                createProjectPage(project.title);
+            })
+    
+            subHeadingDiv.appendChild(subTaskTitle);
+            subHeadingDiv.appendChild(removeSubTask);
+            
+            subTaskDiv.appendChild(subHeadingDiv);
 
             for(let sub of p.tasks){
-                let subTaskP = document.createElement("p");
-                subTaskP.textContent = sub.description;
-                subTaskDiv.appendChild(subTaskP);
+                let subDiv = document.createElement("div");
+
+                let subDescription = document.createElement("p")
+                subDescription.textContent = sub.description;
+    
+                let removeSub = document.createElement("button");
+                removeSub.textContent = "X";
+                removeSub.addEventListener("click", ()=>{
+                    let subIndex = p.tasks.indexOf(sub);
+                    p.tasks.splice(subIndex, 1);
+                    createProjectPage(project.title);
+                })
+    
+                subDiv.appendChild(subDescription);
+                subDiv.appendChild(removeSub);
+                
+                subTaskDiv.appendChild(subDiv);
             }
 
 
@@ -348,9 +404,22 @@ const displayController = (function(){
         newNote.appendChild(addNewNoteBtn);
 
         project.notes.forEach((note => {
-            let noteDiv = document.createElement("h3");
-            noteDiv.textContent = note.description;
+            let noteDiv = document.createElement("div");
 
+            let notesDescription = document.createElement("h3")
+            notesDescription.textContent = note.description;
+
+            let removeNote = document.createElement("button");
+            removeNote.textContent = "X";
+            removeNote.addEventListener("click", ()=>{
+                let noteIndex = project.notes.indexOf(note);
+                project.notes.splice(noteIndex, 1);
+                createProjectPage(project.title)
+            })
+
+            noteDiv.appendChild(notesDescription);
+            noteDiv.appendChild(removeNote);
+            
             notes.appendChild(noteDiv);
         }));
 
@@ -359,8 +428,17 @@ const displayController = (function(){
         notesContainer.appendChild(newNote);
 
         projectInfoContainer.appendChild(notesContainer);
+
+        const deleteProjectBtn = document.createElement("button");
+        deleteProjectBtn.textContent = "Delete Project";
+        deleteProjectBtn.addEventListener("click", ()=>{
+            let projectIndex = bL.projectList.indexOf(project);
+            bL.projectList.splice(projectIndex,1);
+            createHomePage();
+        })
         content.appendChild(projectInfoContainer);
         content.appendChild(subTasksContainer);
+        content.appendChild(deleteProjectBtn);
         
 
         body.appendChild(content);
