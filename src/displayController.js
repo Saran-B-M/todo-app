@@ -4,7 +4,7 @@ import "./styles/home.css"
 import "./styles/project.css"
 import homeLogo from "./images/home-outline.png"
 
-import * as bL from "./project"
+import * as logic from "./logic"
 
 const displayController = (function(){
     const body = document.querySelector("body");
@@ -61,7 +61,7 @@ const displayController = (function(){
         const projectDueDate = document.createElement("label");
         projectDueDate.textContent = "Due-Date";
         const projectDueDateInput = document.createElement("input");
-        projectDueDateInput.id = "duedate";
+        projectDueDateInput.id = "dueDate";
         projectDueDate.appendChild(projectDueDateInput);
 
         const projectPriority = document.createElement("label");
@@ -79,10 +79,8 @@ const displayController = (function(){
             let dueDate = document.querySelector("#duedate").value;
             let priority = document.querySelector("#priority").value;
 
-            let newProject = bL.Project(title, description, dueDate, priority);
-            console.log(newProject);
-            bL.projectList.push(newProject);
-            createProjectPage(newProject.title);
+            logic.addNewProject(title, description, dueDate, priority);
+            createProjectPage(title);
         })
 
         newProjectForm.appendChild(projectTitle);
@@ -115,9 +113,7 @@ const displayController = (function(){
         const newProjectBtn = document.createElement("button");
         newProjectBtn.textContent = "New Project";
 
-        newProjectBtn.addEventListener("click", ()=> {
-            createNewProject();
-        })
+        newProjectBtn.addEventListener("click", createNewProject);
 
         projectHeadingDiv.appendChild(projectHeading);
         projectHeadingDiv.appendChild(newProjectBtn);
@@ -125,22 +121,13 @@ const displayController = (function(){
         const projects = document.createElement("div");
         projects.classList.add("projects");
 
-        const eventListeners = function() {
-            const openProject = (e) => {
-                
-            }
-
-            return {openProject};
-        }
-
-        for(let project of bL.projectList){
+        for(let project of logic.projectList){
             let projectBtn = document.createElement("button");
             projectBtn.classList.add("project");
             projectBtn.textContent = project.title;
             
             projectBtn.id = project.title;
             projectBtn.addEventListener('click', (e)=>{
-                
                 createProjectPage(e.target.id);
             });
             projects.appendChild(projectBtn);
@@ -166,15 +153,13 @@ const displayController = (function(){
         const addNewSubTaskBtn = document.createElement("button");
         addNewSubTaskBtn.textContent = "Add";
         addNewSubTaskBtn.addEventListener("click", ()=>{
-            bL.generalSubTasks.push(bL.Notes(newSubTaskInput.value));
-            
+            logic.addNewSubTask(newSubTaskInput.value);     
             createHomePage();
-
         })
         newSubTask.appendChild(newSubTaskInput);
         newSubTask.appendChild(addNewSubTaskBtn);
 
-        bL.generalSubTasks.forEach((subTask => {
+        logic.generalSubTasks.forEach((subTask => {
             let subTaskDiv = document.createElement("div");
 
             let subTaskDescription = document.createElement("h3")
@@ -183,8 +168,7 @@ const displayController = (function(){
             let removeSubTask = document.createElement("button");
             removeSubTask.textContent = "X";
             removeSubTask.addEventListener("click", ()=>{
-                let subTaskIndex = bL.generalSubTasks.indexOf(subTask);
-                bL.generalSubTasks.splice(subTaskIndex, 1);
+                logic.removeSubTask(subTask);
                 createHomePage();
             })
 
@@ -214,14 +198,13 @@ const displayController = (function(){
         const addNewNotesBtn = document.createElement("button");
         addNewNotesBtn.textContent = "Add";
         addNewNotesBtn.addEventListener("click", ()=>{
-            bL.generalNotes.push(bL.Notes(newNotesInput.value));
+            logic.addNewNote(newNotesInput.value);
             createHomePage();
-
         })
         newNotes.appendChild(newNotesInput);
         newNotes.appendChild(addNewNotesBtn); 
 
-        bL.generalNotes.forEach((note => {
+        logic.generalNotes.forEach((note => {
             let noteDiv = document.createElement("div");
 
             let notesDescription = document.createElement("h3")
@@ -230,8 +213,7 @@ const displayController = (function(){
             let removeNote = document.createElement("button");
             removeNote.textContent = "X";
             removeNote.addEventListener("click", ()=>{
-                let noteIndex = bL.generalNotes.indexOf(note);
-                bL.generalNotes.splice(noteIndex, 1);
+                logic.removeNote(note);
                 createHomePage();
             })
 
@@ -256,11 +238,11 @@ const displayController = (function(){
     }
 
     //Create a function called create Project page that takes a project title 
-    //and shows the relevant date about the project
+    //and shows the relevant data about the project
     const createProjectPage = function(projectTitle){
         if(content) body.removeChild(content); 
         let project;
-        bL.projectList.forEach((p)=>{
+        logic.projectList.forEach((p)=>{
             if(p.title===projectTitle) project = p;
         });
 
@@ -300,8 +282,7 @@ const displayController = (function(){
         addSubtaskBtn.textContent = "New Subtask";
         addSubtaskBtn.addEventListener("click", ()=>{
             let subTaskHeading = prompt("What's the title of the subtask?");
-            project.subTasks.push(bL.SubTask(subTaskHeading));
-            body.removeChild(content);
+            project.addSubTask(project, subTaskHeading); 
             createProjectPage(project.title);
         })
 
@@ -311,22 +292,20 @@ const displayController = (function(){
         const subTasks = document.createElement("div");
         subTasks.classList.add("project-subTasks");
 
-        for(let p of project.subTasks){
+        for(let subTask of project.subTasks){
             let subTaskDiv = document.createElement("div");
-            subTaskDiv.classList.add("project-subTask");
-            
+            subTaskDiv.classList.add("project-subTask"); 
 
             let subHeadingDiv = document.createElement("div");
 
             let subTaskTitle = document.createElement("h3");
-            subTaskTitle.textContent = p.title;
+            subTaskTitle.textContent = subTask.title;
 
     
             let removeSubTask = document.createElement("button");
             removeSubTask.textContent = "X";
             removeSubTask.addEventListener("click", ()=>{
-                let subTaskIndex = project.subTasks.indexOf(p);
-                project.subTasks.splice(subTaskIndex, 1);
+                project.removeSubTask(project, subTask);
                 createProjectPage(project.title);
             })
     
@@ -335,7 +314,7 @@ const displayController = (function(){
             
             subTaskDiv.appendChild(subHeadingDiv);
 
-            for(let sub of p.tasks){
+            for(let sub of subTask.tasks){
                 let subDiv = document.createElement("div");
 
                 let subDescription = document.createElement("p")
@@ -344,8 +323,7 @@ const displayController = (function(){
                 let removeSub = document.createElement("button");
                 removeSub.textContent = "X";
                 removeSub.addEventListener("click", ()=>{
-                    let subIndex = p.tasks.indexOf(sub);
-                    p.tasks.splice(subIndex, 1);
+                    subTask.removeTask(subTask, sub);
                     createProjectPage(project.title);
                 })
     
@@ -363,8 +341,7 @@ const displayController = (function(){
             const addNewTaskBtn = document.createElement("button");
             addNewTaskBtn.textContent = "Add";
             addNewTaskBtn.addEventListener("click", ()=>{
-                p.tasks.push(bL.Notes(newTaskInput.value));
-                body.removeChild(content);
+                subTask.addTask(subTask, newTaskInput.value)
                 createProjectPage(project.title);
 
             })
@@ -395,8 +372,7 @@ const displayController = (function(){
         const addNewNoteBtn = document.createElement("button");
         addNewNoteBtn.textContent = "Add";
         addNewNoteBtn.addEventListener("click", ()=>{
-            project.notes.push(bL.Notes(newNoteInput.value));
-            body.removeChild(content);
+            project.addNote(project, newNoteInput.value);
             createProjectPage(project.title);
 
         })
@@ -412,8 +388,7 @@ const displayController = (function(){
             let removeNote = document.createElement("button");
             removeNote.textContent = "X";
             removeNote.addEventListener("click", ()=>{
-                let noteIndex = project.notes.indexOf(note);
-                project.notes.splice(noteIndex, 1);
+                project.removeNote(project, note);
                 createProjectPage(project.title)
             })
 
@@ -432,8 +407,7 @@ const displayController = (function(){
         const deleteProjectBtn = document.createElement("button");
         deleteProjectBtn.textContent = "Delete Project";
         deleteProjectBtn.addEventListener("click", ()=>{
-            let projectIndex = bL.projectList.indexOf(project);
-            bL.projectList.splice(projectIndex,1);
+            logic.removeProject(project);
             createHomePage();
         })
         content.appendChild(projectInfoContainer);
@@ -449,7 +423,6 @@ const displayController = (function(){
     const createPage = function(){
         createNavBar();
         createHomePage();
-        //createProjectPage("1st Project");
     };
 
     createPage();
