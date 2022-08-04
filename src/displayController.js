@@ -20,11 +20,13 @@ const displayController = (function(){
         const dateDayTime = document.createElement("div");
         dateDayTime.classList.add("dateDayTime")
         const day = document.createElement("div");
-        day.textContent = "Friday";
+        day.textContent = logic.Clock.getDay();
         const date = document.createElement("div");
-        date.textContent = "22/07/22";
+        date.textContent = logic.Clock.getDate();
         const time = document.createElement("div");
-        time.textContent = "10:10 am";
+        setInterval(()=>{
+            time.textContent = logic.Clock.getTime();
+        }, 1000);
     
         dateDayTime.appendChild(day);
         dateDayTime.appendChild(date);
@@ -54,20 +56,35 @@ const displayController = (function(){
 
         const projectDescription = document.createElement("label");
         projectDescription.textContent = "Description";
-        const projectDescriptionInput = document.createElement("input");
+        const projectDescriptionInput = document.createElement("textarea");
+        projectDescriptionInput.rows = 6;
+        projectDescriptionInput.cols = 33;
         projectDescriptionInput.id = "description";
         projectDescription.appendChild(projectDescriptionInput);
 
         const projectDueDate = document.createElement("label");
         projectDueDate.textContent = "Due-Date";
         const projectDueDateInput = document.createElement("input");
+        projectDueDateInput.type = "date";
         projectDueDateInput.id = "dueDate";
         projectDueDate.appendChild(projectDueDateInput);
 
         const projectPriority = document.createElement("label");
         projectPriority.textContent = "Priority";
-        const projectPriorityInput = document.createElement("input");
+        const projectPriorityInput = document.createElement("select");
         projectPriorityInput.id = "priority";
+        const noPriorityOption = document.createElement("option");
+        noPriorityOption.value = "none";
+        noPriorityOption.textContent = "None";
+        const mediumPriorityOption = document.createElement("option");
+        mediumPriorityOption.value = "medium";
+        mediumPriorityOption.textContent = "Medium";
+        const highPriorityOption = document.createElement("option");
+        highPriorityOption.value = "high";
+        highPriorityOption.textContent = "High";
+        projectPriorityInput.appendChild(noPriorityOption);
+        projectPriorityInput.appendChild(mediumPriorityOption);
+        projectPriorityInput.appendChild(highPriorityOption);
         projectPriority.appendChild(projectPriorityInput);
 
         const createProject = document.createElement("button");
@@ -76,7 +93,7 @@ const displayController = (function(){
         createProject.addEventListener("click", ()=>{
             let title = document.querySelector("#title").value;
             let description = document.querySelector("#description").value;
-            let dueDate = document.querySelector("#duedate").value;
+            let dueDate = document.querySelector("#dueDate").value;
             let priority = document.querySelector("#priority").value;
 
             logic.addNewProject(title, description, dueDate, priority);
@@ -245,6 +262,7 @@ const displayController = (function(){
         logic.projectList.forEach((p)=>{
             if(p.title===projectTitle) project = p;
         });
+        console.log(project);
 
         content = document.createElement("div");
         content.classList.add("content-project");
@@ -256,7 +274,8 @@ const displayController = (function(){
         projectHeading.textContent = project.title;
 
         const projectDueDate = document.createElement("p");
-        projectDueDate.textContent = `Due date: ${project.dueDate}`;
+        projectDueDate.textContent = `Due date: ${logic.Clock.getDate(new Date(project.dueDate))},  
+        ${logic.Clock.diffDays(new Date(project.dueDate), new Date())} days left`;
 
         const projectDescriptionContainer = document.createElement("div");
         const projectDescriptionHeading = document.createElement("h2");
