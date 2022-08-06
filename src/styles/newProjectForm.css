@@ -1,0 +1,32 @@
+label {
+    display: block;
+
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.content-newProject {
+    padding: 50px;
+}
+.form-container {
+    display: flex;
+    justify-content: center ;
+    align-items: center;
+}
+
+.form {
+    background-color: var(--priority-none);
+    border:none;
+    border-radius: 15px;
+    padding: 50px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    
+
+}
+
+.form > button {
+    grid-column: 2/3;
+}

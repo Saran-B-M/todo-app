@@ -13,21 +13,26 @@ function Project(title, description='', dueDate='', priority=''){
     const addSubTask = (project, subTaskHeading) => {
         if(subTaskHeading){
             let subTask = SubTask(subTaskHeading);
-            project.subTasks.push(subTask);        }
+            project.subTasks.push(subTask);     
+            updateStorage();   
+        }
     }
     const removeSubTask = (project, p) => {
         let subTaskIndex = project.subTasks.indexOf(p);
         project.subTasks.splice(subTaskIndex, 1);
+        updateStorage();
     }
     const addNote = (project, note) => {
         if(note) {
             let newNote = Notes(note);
             project.notes.push(newNote);
+            updateStorage();
         }  
     }
     const removeNote = (project, note) => {
         let noteIndex = project.notes.indexOf(note);
         project.notes.splice(noteIndex, 1);
+        updateStorage();
     }
 
     
@@ -43,11 +48,13 @@ function SubTask(title) {
         if(task){
             let newTask = Notes(task);
             subTask.tasks.push(newTask);
+            updateStorage();
         }
     }
     const removeTask = (subTask, task) => {
         let subIndex = subTask.tasks.indexOf(task);
         subTask.tasks.splice(subIndex, 1);
+        updateStorage();
     }
     return {title, priority, tasks, addTask, removeTask};
 }
@@ -88,21 +95,25 @@ const Clock = (function(){
 // const p2 = Project("Lorem Ipsum");
 // const p3 = Project("Lorem Ipsum");
 let projectList = [];
-// if(!localStorage.getItem("projectList")) projectList = [];
-// else {
-//     let projectListJSON = JSON.parse(localStorage.getItem("projectList"));
-//     for(let project of projectListJSON){
-//         let newProject = Project(project.title, project.description, project.dueDate,
-//             project.priority);
-//         let newSubTasks = [];
-//         for(let subTask of newProject.subTasks){
-            
-//             newSubTasks.push(SubTask(subTask.title));
-//         }
-//         newProject.subTasks = newSubTasks;
-//         projectList.push(newProject);
-//     }
-// }
+if(localStorage.getItem("projectList")) {
+    let projectListJSON = JSON.parse(localStorage.getItem("projectList"));
+    for(let project of projectListJSON){
+        let newProject = Project(project.title, project.description, project.dueDate,
+            project.priority);
+        for(let note of project.notes){
+            newProject.notes.push(Notes(note.description));
+        }
+        for(let subTask of project.subTasks){
+            console.log(subTask);
+            let newSubTask = SubTask(subTask.title);
+            for(let task of subTask.tasks){
+                newSubTask.tasks.push(Notes(task.description))
+            }
+            newProject.subTasks.push(newSubTask);
+        }
+        projectList.push(newProject);
+    }
+}
 // projectList.push(p1);
 // projectList.push(p2);
 // projectList.push(p3);
@@ -111,15 +122,38 @@ let projectList = [];
 // let n2 = Notes("Lorem ipsum dolor sit.");
 // let n3 = Notes("Lorem ipsum dolor sit.");
 let generalSubTasks = [];
+if(localStorage.getItem('generalSubTasks')){
+    let generalSubTasksJSON = localStorage.getItem('generalSubTasks');
+    generalSubTasks = JSON.parse(generalSubTasksJSON);
+}
 // generalSubTasks.push(n1);
 // generalSubTasks.push(n2);
 // generalSubTasks.push(n3);
 
 
 let generalNotes = [];
+if(localStorage.getItem('generalNotes')){
+    let generalNotesJSON = localStorage.getItem('generalNotes');
+    generalNotes = JSON.parse(generalNotesJSON);
+}
 // generalNotes.push(n1);
 // generalNotes.push(n2);
 // generalNotes.push(n3);
+
+//create a function called updateStorage that updates the local storage of the 
+//browser every time a change occurs in the projects, subtasks, notes...
+
+//Change the current values to JSON string
+//Update the localStorage's keys with the JSON string
+function updateStorage(){
+    let projectListJSON = JSON.stringify(projectList);
+    let generalSubTasksJSON = JSON.stringify(generalSubTasks);
+    let generalNotesJSON = JSON.stringify(generalNotes);
+
+    localStorage.setItem("projectList", projectListJSON);
+    localStorage.setItem("generalSubTasks", generalSubTasksJSON);
+    localStorage.setItem("generalNotes", generalNotesJSON);
+}
 
 //Create a function that creates a new project with the given values and adds 
 //it to the project list
@@ -132,7 +166,7 @@ function addNewProject(title, description, dueDate, priority){
         if(dueDate) dueDate = new Date(dueDate);
         let newProject = Project(title, description, dueDate, priority);
         projectList.push(newProject);
-        localStorage.setItem("projectList", JSON.stringify(projectList));
+        updateStorage();
 
     }
 }
@@ -140,20 +174,23 @@ function addNewProject(title, description, dueDate, priority){
 function removeProject(project){
     let projectIndex = projectList.indexOf(project);
     projectList.splice(projectIndex,1);
+    updateStorage();
 }
 
 function addNewSubTask(task){
     if(task) {
         let subTask = Notes(task);
         generalSubTasks.push(subTask);
+        updateStorage();
     }
-    return
+
 }
 
 function removeSubTask(task){
     if(task) {
         let subTaskIndex = generalSubTasks.indexOf(task);
         generalSubTasks.splice(subTaskIndex, 1);
+        updateStorage();
     }
 }
 
@@ -161,6 +198,7 @@ function addNewNote(note){
     if(note) {
         let newNote = Notes(note);
         generalNotes.push(newNote);
+        updateStorage();
     }
 }
 
@@ -168,6 +206,7 @@ function removeNote(note){
     if(note){
         let noteIndex = generalNotes.indexOf(note);
         generalNotes.splice(noteIndex, 1);
+        updateStorage();
     }
 }
 

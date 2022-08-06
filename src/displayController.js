@@ -2,6 +2,7 @@ import "normalize.css/normalize.css"
 import "./styles/base.css"
 import "./styles/home.css"
 import "./styles/project.css"
+import "./styles/newProjectForm.css"
 import homeLogo from "./images/home-outline.png"
 
 import * as logic from "./logic"
@@ -44,33 +45,44 @@ const displayController = (function(){
         content.classList.add("content-newProject");
         
         const heading = document.createElement("h1");
-        heading.textContent = "New Project";
+        heading.textContent = "New Project:";
 
         const newProjectForm = document.createElement("div");
+        const formContainer = document.createElement("div");
+        formContainer.classList.add("form-container");
+        formContainer.appendChild(newProjectForm);
+        newProjectForm.classList.add("form");
 
-        const projectTitle = document.createElement("label");
-        projectTitle.textContent = "Title";
+        const projectTitleLabel = document.createElement("label");
+        projectTitleLabel.textContent = "Title";
+        projectTitleLabel.for = "title";
         const projectTitleInput = document.createElement("input");
         projectTitleInput.id = 'title';
-        projectTitle.appendChild(projectTitleInput);
+        newProjectForm.appendChild(projectTitleLabel);
+        newProjectForm.appendChild(projectTitleInput);
 
-        const projectDescription = document.createElement("label");
-        projectDescription.textContent = "Description";
+        const projectDescriptionLabel = document.createElement("label");
+        projectDescriptionLabel.textContent = "Description";
+        projectDescriptionLabel.for = "description";
         const projectDescriptionInput = document.createElement("textarea");
         projectDescriptionInput.rows = 6;
         projectDescriptionInput.cols = 33;
         projectDescriptionInput.id = "description";
-        projectDescription.appendChild(projectDescriptionInput);
+        newProjectForm.appendChild(projectDescriptionLabel);
+        newProjectForm.appendChild(projectDescriptionInput);
 
-        const projectDueDate = document.createElement("label");
-        projectDueDate.textContent = "Due-Date";
+        const projectDueDateLabel = document.createElement("label");
+        projectDueDateLabel.textContent = "Due-Date";
+        projectDueDateLabel.for = "dueDate";
         const projectDueDateInput = document.createElement("input");
         projectDueDateInput.type = "date";
         projectDueDateInput.id = "dueDate";
-        projectDueDate.appendChild(projectDueDateInput);
+        newProjectForm.appendChild(projectDueDateLabel);
+        newProjectForm.appendChild(projectDueDateInput);
 
-        const projectPriority = document.createElement("label");
-        projectPriority.textContent = "Priority";
+        const projectPriorityLabel = document.createElement("label");
+        projectPriorityLabel.textContent = "Priority";
+        projectPriorityLabel.for = "priority";
         const projectPriorityInput = document.createElement("select");
         projectPriorityInput.id = "priority";
         const noPriorityOption = document.createElement("option");
@@ -85,7 +97,8 @@ const displayController = (function(){
         projectPriorityInput.appendChild(noPriorityOption);
         projectPriorityInput.appendChild(mediumPriorityOption);
         projectPriorityInput.appendChild(highPriorityOption);
-        projectPriority.appendChild(projectPriorityInput);
+        newProjectForm.appendChild(projectPriorityLabel)
+        newProjectForm.appendChild(projectPriorityInput);
 
         const createProject = document.createElement("button");
         createProject.textContent = "Create";
@@ -100,14 +113,10 @@ const displayController = (function(){
             createProjectPage(title);
         })
 
-        newProjectForm.appendChild(projectTitle);
-        newProjectForm.appendChild(projectDescription);
-        newProjectForm.appendChild(projectDueDate);
-        newProjectForm.appendChild(projectPriority);
         newProjectForm.appendChild(createProject);
 
         content.appendChild(heading);
-        content.appendChild(newProjectForm);
+        content.appendChild(formContainer);
 
         body.appendChild(content);
     }
@@ -125,6 +134,7 @@ const displayController = (function(){
         projectsContainer.classList.add("project-container");
 
         const projectHeadingDiv = document.createElement("div");
+        projectHeadingDiv.classList.add("projectHeading");
         const projectHeading = document.createElement("h2");
         projectHeading.textContent = "What do you like to work on?";
         const newProjectBtn = document.createElement("button");
@@ -142,7 +152,8 @@ const displayController = (function(){
             let projectBtn = document.createElement("button");
             projectBtn.classList.add("project");
             projectBtn.textContent = project.title;
-            
+            if(project.priority==="high") projectBtn.style.backgroundColor = '#ef4444';
+            else if(project.priority==="medium") projectBtn.style.backgroundColor = "#60a5fa";
             projectBtn.id = project.title;
             projectBtn.addEventListener('click', (e)=>{
                 createProjectPage(e.target.id);
@@ -160,7 +171,7 @@ const displayController = (function(){
         const subTaskHeading = document.createElement("h2");
         subTaskHeading.textContent = "Sub Tasks";
 
-        const subTasks = document.createElement("div");
+        const subTasks = document.createElement("ul");
         subTasks.classList.add("subtasks");
 
         const newSubTask = document.createElement("div");
@@ -177,9 +188,10 @@ const displayController = (function(){
         newSubTask.appendChild(addNewSubTaskBtn);
 
         logic.generalSubTasks.forEach((subTask => {
-            let subTaskDiv = document.createElement("div");
+            let subTaskDiv = document.createElement("li");
+            subTaskDiv.classList.add("note");
 
-            let subTaskDescription = document.createElement("h3")
+            let subTaskDescription = document.createElement("p")
             subTaskDescription.textContent = subTask.description;
 
             let removeSubTask = document.createElement("button");
@@ -205,13 +217,13 @@ const displayController = (function(){
         const notesHeading = document.createElement("h2");
         notesHeading.textContent = "Notes";
 
-        const notes = document.createElement("div");
+        const notes = document.createElement("ul");
         notes.classList.add("notes");
 
         const newNotes = document.createElement("div");
-        newNotes.classList.add("newNotes");
+        newNotes.classList.add("newNote");
         const newNotesInput = document.createElement("input");
-        newNotesInput.id = "newNotes";
+        newNotesInput.id = "newNote";
         const addNewNotesBtn = document.createElement("button");
         addNewNotesBtn.textContent = "Add";
         addNewNotesBtn.addEventListener("click", ()=>{
@@ -222,9 +234,10 @@ const displayController = (function(){
         newNotes.appendChild(addNewNotesBtn); 
 
         logic.generalNotes.forEach((note => {
-            let noteDiv = document.createElement("div");
+            let noteDiv = document.createElement("li");
+            noteDiv.classList.add("note");
 
-            let notesDescription = document.createElement("h3")
+            let notesDescription = document.createElement("p")
             notesDescription.textContent = note.description;
 
             let removeNote = document.createElement("button");
@@ -262,8 +275,6 @@ const displayController = (function(){
         logic.projectList.forEach((p)=>{
             if(p.title===projectTitle) project = p;
         });
-        console.log(project);
-
         content = document.createElement("div");
         content.classList.add("content-project");
 
@@ -296,7 +307,7 @@ const displayController = (function(){
         subTasksHeadingContainer.classList.add("subtasks-heading-container");
 
         const subTasksHeading = document.createElement("h2");
-        subTasksHeading.textContent = "Sub Tasks";
+        subTasksHeading.textContent = "SUB TASKS:";
         const addSubtaskBtn = document.createElement("button");
         addSubtaskBtn.textContent = "New Subtask";
         addSubtaskBtn.addEventListener("click", ()=>{
@@ -316,6 +327,7 @@ const displayController = (function(){
             subTaskDiv.classList.add("project-subTask"); 
 
             let subHeadingDiv = document.createElement("div");
+            subHeadingDiv.classList.add("note");
 
             let subTaskTitle = document.createElement("h3");
             subTaskTitle.textContent = subTask.title;
@@ -333,8 +345,12 @@ const displayController = (function(){
             
             subTaskDiv.appendChild(subHeadingDiv);
 
+            const subTaskList = document.createElement("ul");
+            subTaskDiv.appendChild(subTaskList);
+
             for(let sub of subTask.tasks){
-                let subDiv = document.createElement("div");
+                let subDiv = document.createElement("li");
+                subDiv.classList.add("note");
 
                 let subDescription = document.createElement("p")
                 subDescription.textContent = sub.description;
@@ -349,7 +365,7 @@ const displayController = (function(){
                 subDiv.appendChild(subDescription);
                 subDiv.appendChild(removeSub);
                 
-                subTaskDiv.appendChild(subDiv);
+                subTaskList.appendChild(subDiv);
             }
 
 
@@ -381,7 +397,7 @@ const displayController = (function(){
         const notesHeading = document.createElement("h2");
         notesHeading.textContent = "Notes";
 
-        const notes = document.createElement("div");
+        const notes = document.createElement("ul");
         notes.classList.add("notes");
 
         const newNote = document.createElement("div");
@@ -399,7 +415,8 @@ const displayController = (function(){
         newNote.appendChild(addNewNoteBtn);
 
         project.notes.forEach((note => {
-            let noteDiv = document.createElement("div");
+            let noteDiv = document.createElement("li");
+            noteDiv.classList.add("note");
 
             let notesDescription = document.createElement("h3")
             notesDescription.textContent = note.description;
@@ -423,15 +440,20 @@ const displayController = (function(){
 
         projectInfoContainer.appendChild(notesContainer);
 
+        const deleteProjectDiv = document.createElement("div");
+        deleteProjectDiv.classList.add("deleteProject");
+
         const deleteProjectBtn = document.createElement("button");
         deleteProjectBtn.textContent = "Delete Project";
         deleteProjectBtn.addEventListener("click", ()=>{
             logic.removeProject(project);
             createHomePage();
         })
+        deleteProjectDiv.appendChild(deleteProjectBtn);
+
         content.appendChild(projectInfoContainer);
         content.appendChild(subTasksContainer);
-        content.appendChild(deleteProjectBtn);
+        content.appendChild(deleteProjectDiv);
         
 
         body.appendChild(content);
