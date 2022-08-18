@@ -1,12 +1,12 @@
 
 /************************************class*************************************/
 .content-home {
-    padding: 0 50px;
+    padding: 10px 50px 0px;
     margin-bottom: 20px;
 
     display: grid;
     grid-template-columns: 3fr 1fr;
-    grid-template-rows: 1fr 2fr 2fr;
+    grid-template-rows: 100px 1fr;
 
     gap: 20px;
 
@@ -47,6 +47,15 @@
     padding: 10px 6px;
 }
 
+.sideColumn{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    grid-column: 2/-1;
+    grid-row: 2/-1;
+}
+
 .subtasks-container {
     text-align: center; 
     background-color: var(--priority-none);
@@ -56,8 +65,7 @@
     flex-direction: column;
     justify-content: space-between;
     
-    grid-column: 2/-1;
-    grid-row: 2/3;
+    
 }
 
 .subtasks-container > h2 {
@@ -80,7 +88,7 @@
 }
 .projects {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     justify-items: center;
     align-items: center;
     gap: 10px;

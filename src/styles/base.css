@@ -55,8 +55,6 @@ header {
     flex-direction: column;
     justify-content: space-between;
     
-    grid-column: 2/-1;
-    grid-row: 3/-1;
 }
 
 .notes-container > h2 {
